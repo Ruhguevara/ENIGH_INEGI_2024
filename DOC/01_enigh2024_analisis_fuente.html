@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ENIGH 2024 Nueva Serie — evaluación como fuente para el estimador de ingresos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#132a30;
+  --ink-soft:#4b6167;
+  --paper:#eef1ee;
+  --paper-2:#e4e8e4;
+  --rule:#c3cdc9;
+  --rule-hard:#8fa19c;
+  --signal:#0d6a5e;
+  --signal-pale:#d4e5e1;
+  --alert:#9d3f22;
+  --alert-pale:#f0e0d8;
+  --measure:70ch;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  font-variant-numeric:tabular-nums;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px 120px}
+
+/* ---------- cabecera ---------- */
+.masthead{
+  padding:64px 0 34px;
+  border-bottom:2px solid var(--ink);
+}
+.kicker{
+  font-size:.82rem;
+  letter-spacing:.02em;
+  color:var(--signal);
+  font-weight:600;
+  margin:0 0 14px;
+}
+h1{
+  font-family:"Newsreader",Georgia,serif;
+  font-weight:500;
+  font-size:clamp(2.1rem,4.6vw,3.35rem);
+  line-height:1.08;
+  letter-spacing:-.015em;
+  margin:0 0 18px;
+  max-width:19ch;
+}
+.standfirst{
+  font-family:"Newsreader",Georgia,serif;
+  font-size:1.16rem;
+  line-height:1.55;
+  color:var(--ink-soft);
+  max-width:64ch;
+  margin:0;
+}
+.masthead-meta{
+  margin-top:26px;
+  font-size:.86rem;
+  color:var(--ink-soft);
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 30px;
+}
+.masthead-meta b{font-weight:600;color:var(--ink)}
+
+/* ---------- estructura ---------- */
+section{padding-top:56px}
+h2{
+  font-family:"Newsreader",Georgia,serif;
+  font-weight:500;
+  font-size:1.72rem;
+  line-height:1.2;
+  letter-spacing:-.01em;
+  margin:0 0 6px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--rule-hard);
+}
+h2 .num{
+  font-family:"Public Sans",sans-serif;
+  font-size:.78rem;
+  font-weight:600;
+  color:var(--signal);
+  vertical-align:.62em;
+  margin-right:.7em;
+}
+h3{
+  font-size:1rem;
+  font-weight:600;
+  margin:34px 0 8px;
+  letter-spacing:.005em;
+}
+p{max-width:var(--measure);margin:0 0 14px}
+ul,ol{max-width:var(--measure);padding-left:1.15em;margin:0 0 16px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+code{
+  font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;
+  font-size:.87em;
+  background:var(--paper-2);
+  padding:.08em .32em;
+  border-radius:2px;
+}
+a{color:var(--signal)}
+
+/* ---------- escalera geográfica ---------- */
+.ladder{
+  margin:28px 0 8px;
+  border-top:1px solid var(--rule);
+}
+.rung{
+  display:grid;
+  grid-template-columns:minmax(150px,1.1fr) minmax(0,2.4fr) minmax(96px,auto);
+  gap:0 22px;
+  align-items:baseline;
+  padding:13px 0 13px 18px;
+  border-bottom:1px solid var(--rule);
+  position:relative;
+}
+.rung::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:var(--signal);
+}
+.rung.off::before{background:var(--rule)}
+.rung.off .level,.rung.off .detail{color:var(--ink-soft)}
+.level{font-weight:600;font-size:.98rem}
+.level small{display:block;font-weight:400;font-size:.78rem;color:var(--ink-soft);letter-spacing:0}
+.detail{font-size:.9rem;color:var(--ink)}
+.verdict{
+  font-size:.76rem;
+  font-weight:600;
+  text-align:right;
+  color:var(--signal);
+}
+.rung.off .verdict{color:var(--ink-soft)}
+.cutline{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:14px 0 14px 18px;
+  background:var(--alert-pale);
+  border-bottom:1px solid var(--rule);
+  border-left:3px solid var(--alert);
+  margin-left:0;
+}
+.cutline b{color:var(--alert);font-size:.9rem;font-weight:600}
+.cutline span{font-size:.88rem;color:var(--ink);max-width:62ch}
+
+/* ---------- tablas ---------- */
+.tablewrap{overflow-x:auto;margin:20px 0 10px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px}
+caption{
+  text-align:left;
+  font-size:.82rem;
+  color:var(--ink-soft);
+  padding-bottom:9px;
+  max-width:var(--measure);
+}
+th,td{
+  text-align:left;
+  padding:8px 14px 8px 0;
+  border-bottom:1px solid var(--rule);
+  vertical-align:top;
+}
+thead th{
+  border-bottom:1.5px solid var(--rule-hard);
+  font-weight:600;
+  font-size:.79rem;
+  color:var(--ink-soft);
+  padding-bottom:7px;
+}
+td.n,th.n{text-align:right;padding-right:22px;white-space:nowrap}
+tbody tr:last-child td{border-bottom:1px solid var(--rule-hard)}
+tr.total td{font-weight:600;background:var(--paper-2)}
+
+/* ---------- fichas de datos ---------- */
+.facts{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+  gap:1px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+  margin:26px 0 4px;
+}
+.fact{background:var(--paper);padding:16px 18px}
+.fact .v{
+  font-family:"Newsreader",Georgia,serif;
+  font-size:1.55rem;
+  line-height:1.1;
+  display:block;
+  margin-bottom:4px;
+}
+.fact .l{font-size:.79rem;color:var(--ink-soft);line-height:1.35;display:block}
+
+/* ---------- notas ---------- */
+.note{
+  border-left:3px solid var(--signal);
+  background:var(--signal-pale);
+  padding:15px 20px;
+  margin:22px 0;
+  max-width:var(--measure);
+  font-size:.92rem;
+}
+.note.warn{border-left-color:var(--alert);background:var(--alert-pale)}
+.note p{margin:0 0 8px;max-width:none}
+.note p:last-child{margin:0}
+.note .h{font-weight:600;display:block;margin-bottom:6px}
+
+/* ---------- hallazgos ---------- */
+.finding{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:0 20px;
+  padding:20px 0;
+  border-bottom:1px solid var(--rule);
+  max-width:88ch;
+}
+.finding:first-of-type{border-top:1.5px solid var(--rule-hard)}
+.rank{
+  font-family:"Newsreader",Georgia,serif;
+  font-size:1.5rem;
+  color:var(--signal);
+  line-height:1;
+  padding-top:3px;
+  width:2ch;
+}
+.finding h3{margin:0 0 6px;font-size:1.02rem}
+.finding p{margin:0 0 8px;max-width:64ch}
+.finding p:last-child{margin:0}
+.tag{
+  display:inline-block;
+  font-size:.72rem;
+  font-weight:600;
+  color:var(--signal);
+  border:1px solid var(--signal);
+  border-radius:2px;
+  padding:1px 7px;
+  margin:8px 6px 0 0;
+}
+
+footer{
+  margin-top:70px;
+  padding-top:22px;
+  border-top:1px solid var(--rule-hard);
+  font-size:.82rem;
+  color:var(--ink-soft);
+  max-width:var(--measure);
+}
+
+@media (max-width:680px){
+  .wrap{padding:0 18px 80px}
+  .rung{grid-template-columns:1fr;gap:4px}
+  .verdict{text-align:left}
+}
+@media print{
+  body{background:#fff;font-size:10.5pt}
+  section{page-break-inside:auto}
+  .finding,.note,table{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="kicker">Exploración de fuentes · Modelo de estimación de ingresos</p>
+  <h1>ENIGH 2024, Nueva Serie</h1>
+  <p class="standfirst">Qué es, hasta dónde llega geográficamente y qué papel puede jugar en un estimador de ingreso a nivel persona para población sin historial crediticio.</p>
+  <div class="masthead-meta">
+    <span><b>Fuente</b> INEGI, ENIGH 2024 Nueva Serie</span>
+    <span><b>Publicación</b> julio 2025</span>
+    <span><b>Base documental</b> Diseño conceptual, Diseño muestral, Criterios de validación, Documento operativo de campo, Presentación de resultados</span>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<section id="veredicto">
+  <h2><span class="num">§1</span>Veredicto en una página</h2>
+
+  <p>La ENIGH no es una fuente de agregados geográficos. Es una <strong>fuente de estructura</strong>: la única encuesta pública mexicana que mide el ingreso corriente completo del hogar —laboral, no laboral, monetario y en especie— junto con las características de la persona, su trabajo y su vivienda, en el mismo registro.</p>
+
+  <p>Para tu pipeline eso cambia el uso. CONEVAL, el Censo Económico o el DENUE te dan un valor por polígono que enriqueces al solicitante. La ENIGH no compite ahí: su granularidad geográfica pública se detiene en entidad. Lo que sí te da, y ninguna de tus otras fuentes puede darte, es <strong>la función que relaciona atributos observables con ingreso</strong>, y el factor de corrección entre el salario que ves en IMSS y el ingreso que realmente entra al hogar.</p>
+
+  <div class="facts">
+    <div class="fact"><span class="v">105 718</span><span class="l">viviendas en muestra efectiva</span></div>
+    <div class="fact"><span class="v">Bienal</span><span class="l">periodicidad desde 2016 en la Nueva Serie</span></div>
+    <div class="fact"><span class="v">Entidad</span><span class="l">máxima desagregación con representatividad</span></div>
+    <div class="fact"><span class="v">17</span><span class="l">tablas relacionadas en el microdato</span></div>
+    <div class="fact"><span class="v">$77 864</span><span class="l">ingreso corriente trimestral por hogar</span></div>
+    <div class="fact"><span class="v">56 %</span><span class="l">del ingreso corriente viene de trabajo subordinado</span></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="escalera">
+  <h2><span class="num">§2</span>La escalera geográfica y dónde se corta</h2>
+
+  <p>Esta es la pregunta que define si la fuente entra al modelo y cómo. La respuesta tiene dos capas que conviene no confundir: <strong>qué identificadores trae el microdato</strong> y <strong>a qué nivel la encuesta es estadísticamente válida</strong>. No son lo mismo.</p>
+
+  <div class="ladder">
+    <div class="rung">
+      <div class="level">Nacional<small>—</small></div>
+      <div class="detail">Error relativo de 1.60 % para el ingreso corriente promedio trimestral por hogar.</div>
+      <div class="verdict">Representativo</div>
+    </div>
+    <div class="rung">
+      <div class="level">Entidad federativa<small>ubica_geo[1:2], entidad</small></div>
+      <div class="detail">32 dominios, cada uno con corte urbano y rural. El tamaño de muestra se calculó a este nivel; error relativo esperado por entidad menor a 15 %.</div>
+      <div class="verdict">Representativo</div>
+    </div>
+    <div class="rung">
+      <div class="level">Urbano / rural<small>dentro de cada entidad</small></div>
+      <div class="detail">Corte a 2 500 habitantes. Es el dominio de estudio más fino del diseño: 66 744 viviendas urbanas y 38 974 rurales.</div>
+      <div class="verdict">Representativo</div>
+    </div>
+
+    <div class="cutline">
+      <b>Línea de corte</b>
+      <span>Debajo de aquí los identificadores existen en el archivo, pero el diseño muestral no respalda estimaciones. Usarlos como agregado geográfico produce cifras con coeficientes de variación inaceptables y sesgo de cobertura.</span>
+    </div>
+
+    <div class="rung off">
+      <div class="level">Municipio<small>ubica_geo[3:5]</small></div>
+      <div class="detail">El campo <code>ubica_geo</code> es de 5 caracteres: 2 de entidad más 3 de municipio, del catálogo de claves del INEGI. Está ahí, pero 105 718 viviendas repartidas sobre ~2 470 municipios dan un promedio aritmético de 43 viviendas por municipio, y la muestra no cubre todos. Jalisco entero tiene 3 215 viviendas para 125 municipios.</div>
+      <div class="verdict">Solo como llave</div>
+    </div>
+    <div class="rung off">
+      <div class="level">Tamaño de localidad<small>tam_loc</small></div>
+      <div class="detail">Categoría, no ubicación: 1 = 100 000 y más habitantes, 2 = 15 000 a 99 999, 3 = 2 500 a 14 999, 4 = menos de 2 500. No identifica la localidad.</div>
+      <div class="verdict">Covariable</div>
+    </div>
+    <div class="rung off">
+      <div class="level">Estrato socioeconómico<small>est_socio</small></div>
+      <div class="detail">Bajo, medio bajo, medio alto, alto. Clasificación de la UPM construida con 42 indicadores del Censo de Población y Vivienda mediante métodos multivariados. Es la variable que más se parece a tu enriquecimiento AGEB/colonia.</div>
+      <div class="verdict">Covariable</div>
+    </div>
+    <div class="rung off">
+      <div class="level">UPM<small>upm, est_dis</small></div>
+      <div class="detail">Conglomerado de 80 a 160 viviendas: una manzana, unión de manzanas contiguas de la misma AGEB, o una AGEB completa o parcial en el rural. El identificador es ciego: no hay clave de AGEB ni de manzana que permita georreferenciarlo.</div>
+      <div class="verdict">Solo varianza</div>
+    </div>
+    <div class="rung off">
+      <div class="level">Vivienda › hogar › persona<small>folioviv · foliohog · numren</small></div>
+      <div class="detail">Unidad de muestreo, de observación y de análisis. Sin domicilio, sin coordenadas, sin folio reidentificable.</div>
+      <div class="verdict">Microdato</div>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <span class="h">Implicación directa para el pipeline</span>
+    <p>La ENIGH no sustituye a CONEVAL ni al Censo Económico en la capa de enriquecimiento geográfico, y no debe entrar al <em>join</em> por CP → municipio como una variable más. Si la usas como agregado municipal estarás propagando ruido muestral con estructura espacial, que es exactamente el tipo de error que un modelo de crédito no detecta en validación y sí paga en producción.</p>
+    <p>Su punto de entrada correcto es otro: <strong>entidad × tam_loc × est_socio</strong>, un cruce de 32 × 4 × 4 celdas que sí tiene soporte muestral y que puedes reproducir sobre tu propia geografía con el Censo 2020.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="ficha">
+  <h2><span class="num">§3</span>Ficha técnica</h2>
+
+  <div class="tablewrap">
+  <table>
+    <tbody>
+      <tr><th style="width:230px">Objetivo</th><td>Panorama del monto, procedencia y distribución de ingresos y gastos de los hogares; características ocupacionales y sociodemográficas de sus integrantes; infraestructura de la vivienda y equipamiento.</td></tr>
+      <tr><th>Periodicidad</th><td>Bienal. Serie levantada en 1984, 1989, 1992… y desde 2016 con el tamaño de muestra ampliado que dio representatividad estatal. Ediciones de la Nueva Serie: 2016, 2018, 2020, 2022, 2024.</td></tr>
+      <tr><th>Cobertura geográfica</th><td>Nacional y entidad federativa, con cortes urbano y rural.</td></tr>
+      <tr><th>Esquema de muestreo</th><td>Probabilístico, estratificado, bietápico y por conglomerados. Unidad última de selección: la vivienda. Unidad de observación: el hogar.</td></tr>
+      <tr><th>Marco</th><td>Muestra maestra del INEGI, derivada del Marco Maestro de Muestreo construido con información cartográfica y demográfica del Censo de Población y Vivienda 2020.</td></tr>
+      <tr><th>Población objetivo</th><td>Hogares de nacionales o extranjeros residentes habituales en viviendas particulares del territorio nacional.</td></tr>
+      <tr><th>Levantamiento</th><td>Agosto a noviembre de 2024, en diez decenas de siete días consecutivos cada una (incluida una de recuperación). Entrevista directa cara a cara; el entrevistador visita la vivienda los siete días.</td></tr>
+      <tr><th>Instrumentos</th><td>Cinco cuestionarios (hogares y vivienda; personas de 12 o más años; negocios del hogar; personas menores de 12 años; gastos del hogar) más el Cuadernillo de gastos diarios.</td></tr>
+      <tr><th>Periodos de referencia del ingreso</th><td>Seis meses anteriores al mes de entrevista para ingresos de distintas fuentes; el mes pasado para condición de ocupación; el año pasado para aguinaldo, reparto de utilidades e ingresos anuales.</td></tr>
+      <tr><th>Personal operativo</th><td>3 127 personas entre entrevistadoras, supervisoras y demás figuras.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <span class="h">Inconsistencia menor en la documentación</span>
+    <p>El Diseño conceptual fecha el operativo del 11 de agosto al 18 de noviembre de 2024; la Presentación de resultados lo fecha del 21 de agosto al 28 de noviembre. La diferencia no afecta el análisis, pero si vas a documentar la ventana de referencia para auditoría, conviene citar la presentación oficial de resultados y dejar constancia de la discrepancia.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="muestral">
+  <h2><span class="num">§4</span>Diseño muestral: lo que importa para modelar</h2>
+
+  <h3>Estratificación</h3>
+  <p>Cada UPM del país recibe dos etiquetas. Una geográfica, por entidad y ámbito: urbano alto (áreas urbanas de 100 000 o más habitantes), complemento urbano (2 500 a 99 999) y rural (menos de 2 500). Y una socioeconómica, en cuatro estratos construidos con 42 indicadores censales mediante métodos estadísticos multivariados. El cruce produce <strong>1 175 estratos</strong> a nivel nacional.</p>
+
+  <p>Los 42 indicadores del Anexo A del Diseño muestral son, esencialmente, el mismo tipo de insumo que usas para enriquecer a nivel AGEB: proporción de población de 15 años y más alfabeta, con primaria o secundaria completa, con educación posbásica, grado promedio de escolaridad, promedio de ocupantes por cuarto, PEA total y femenina, población desocupada, derechohabiencia; y del lado de la vivienda, material de piso, número de cuartos, electricidad, drenaje, excusado, y disponibilidad de refrigerador, lavadora, automóvil, computadora, internet, celular, televisión de paga y consola de videojuegos, más los agregados de viviendas sin TIC.</p>
+
+  <div class="note">
+    <span class="h">El puente que hace útil a la ENIGH</span>
+    <p>Ese listado es reproducible con el Censo 2020 a nivel AGEB. Si replicas la estratificación en tu propia geografía, obtienes una variable <code>est_socio</code> sintética para cada solicitante y puedes trasladarle la distribución condicional de ingreso que la ENIGH sí estima con validez para esa celda. Es la vía formal para bajar de entidad a AGEB sin inventar representatividad.</p>
+  </div>
+
+  <h3>Selección y ponderación</h3>
+  <div class="tablewrap">
+  <table>
+    <caption>Segunda etapa: viviendas seleccionadas por UPM y tamaño de muestra por ámbito.</caption>
+    <thead>
+      <tr><th>Ámbito</th><th>Definición</th><th class="n">Viviendas por UPM</th><th class="n">Muestra</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Urbano alto</td><td>Áreas urbanas de 100 000 o más habitantes</td><td class="n">5</td><td class="n" rowspan="2">66 744 urbano</td></tr>
+      <tr><td>Complemento urbano</td><td>2 500 a 99 999 habitantes</td><td class="n">24</td></tr>
+      <tr><td>Rural</td><td>Localidades de menos de 2 500 habitantes</td><td class="n">24</td><td class="n">38 974</td></tr>
+      <tr class="total"><td colspan="3">Muestra efectiva nacional</td><td class="n">105 718</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>El factor de expansión es el inverso de la probabilidad total de selección, y se ajusta dos veces: por no respuesta a nivel estrato dentro de cada dominio, y por proyección de población al punto medio del levantamiento. La varianza se estima por el método de <strong>conglomerados últimos</strong>, apoyado en series de Taylor para los estimadores de razón.</p>
+
+  <div class="note warn">
+    <span class="h">Consecuencia práctica</span>
+    <p>Cualquier estimación que hagas con ENIGH necesita el trío <code>upm</code>, <code>est_dis</code> y <code>factor</code>. En Python, <code>samplics</code> o <code>statsmodels</code> con clusters; en R, <code>survey</code>. Un <code>groupby().mean()</code> ponderado solo por <code>factor</code> te dará el punto correcto pero errores estándar subestimados por un factor de entre 1.1 y 1.9, dado que el efecto de diseño por entidad va de 1.17 a 3.73. Si vas a usar la ENIGH para fijar umbrales o validar un score, esa subestimación importa.</p>
+  </div>
+
+  <h3>Parámetros del cálculo de muestra</h3>
+  <p>Confianza de 90 %, tasa de no respuesta esperada de 20 %, promedio de 1.02 hogares por vivienda. Los umbrales de precisión que el INEGI publica en tabulados: coeficiente de variación menor a 15 % se considera precisión alta, de 15 a 30 % moderada, y de 30 % en adelante baja. Usa ese mismo semáforo cuando construyas celdas propias.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="nuevaserie">
+  <h2><span class="num">§5</span>Nueva Serie contra construcción tradicional</h2>
+
+  <p>Esto no es una nota al pie. El INEGI publica la ENIGH 2024 con una construcción de variables distinta a la tradicional, adoptando las recomendaciones de la 17.ª Conferencia Internacional de Estadísticos del Trabajo y el Reporte del Grupo de Canberra. Si mezclas series sin ajustar, los agregados no son comparables.</p>
+
+  <div class="tablewrap">
+  <table>
+    <caption>Cambios de la Nueva Serie que afectan el agregado de ingreso.</caption>
+    <thead><tr><th style="width:210px">Concepto</th><th>Tratamiento tradicional</th><th>Nueva Serie 2024</th></tr></thead>
+    <tbody>
+      <tr><td>Desagregación del ingreso corriente</td><td>Monetario y no monetario</td><td>Cinco rubros que contienen ambos elementos</td></tr>
+      <tr><td>Autoconsumo</td><td>Rubro separado del ingreso no monetario</td><td>Dentro de la cuenta de los negocios del hogar, como parte del ingreso del trabajo independiente. Se capta dos veces en campo, pero solo se usa la estimación del responsable del negocio</td></tr>
+      <tr><td>Aguinaldo</td><td>Fuera del trimestral</td><td>Incorporado al cálculo del ingreso trimestral</td></tr>
+      <tr><td>Regalos entre hogares</td><td>Se incluían</td><td>Los no periódicos, recibidos por única vez, quedan fuera del ingreso corriente por el criterio de regularidad</td></tr>
+      <tr><td>Ingresos de cooperativas y sociedades</td><td>—</td><td>Se incorporan criterios de clasificación específicos</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Los tres criterios que definen qué entra al ingreso corriente: <strong>regularidad</strong>, <strong>disponibilidad</strong> y no afectación del <strong>patrimonio</strong>. Todo lo que modifica el valor neto del patrimonio —retiro de inversiones, tandas, préstamos recibidos— va a percepciones financieras y de capital, fuera del ingreso corriente. Para un modelo de capacidad de pago esa frontera es exactamente la correcta: el ingreso corriente es el flujo recurrente disponible.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="ingreso">
+  <h2><span class="num">§6</span>Cómo se construye el ingreso</h2>
+
+  <div class="tablewrap">
+  <table>
+    <caption>Ingreso corriente promedio trimestral por hogar, pesos de 2024. Fuente: ENIGH 2024, presentación de resultados.</caption>
+    <thead><tr><th>Rubro</th><th class="n">2020</th><th class="n">2022</th><th class="n">2024</th><th class="n">% del total 2024</th></tr></thead>
+    <tbody>
+      <tr class="total"><td>Ingreso corriente</td><td class="n">63 400</td><td class="n">70 391</td><td class="n">77 864</td><td class="n">100.0</td></tr>
+      <tr><td>Ingreso por trabajo</td><td class="n">40 461</td><td class="n">46 260</td><td class="n">51 099</td><td class="n">65.6</td></tr>
+      <tr><td>· Remuneraciones por trabajo subordinado</td><td class="n">34 187</td><td class="n">38 965</td><td class="n">43 665</td><td class="n">56.1</td></tr>
+      <tr><td>· Trabajo independiente</td><td class="n">4 758</td><td class="n">5 985</td><td class="n">6 057</td><td class="n">7.8</td></tr>
+      <tr><td>· Otros trabajos</td><td class="n">1 516</td><td class="n">1 310</td><td class="n">1 378</td><td class="n">1.8</td></tr>
+      <tr><td>Transferencias</td><td class="n">11 179</td><td class="n">12 077</td><td class="n">13 799</td><td class="n">17.7</td></tr>
+      <tr><td>· Jubilaciones, pensiones e indemnizaciones</td><td class="n">5 399</td><td class="n">5 712</td><td class="n">6 244</td><td class="n">8.0</td></tr>
+      <tr><td>· Programas gubernamentales</td><td class="n">1 469</td><td class="n">1 963</td><td class="n">2 500</td><td class="n">3.2</td></tr>
+      <tr><td>· Remesas del exterior</td><td class="n">524</td><td class="n">730</td><td class="n">598</td><td class="n">0.8</td></tr>
+      <tr><td>Estimación del alquiler de la vivienda</td><td class="n">8 278</td><td class="n">8 333</td><td class="n">9 066</td><td class="n">11.6</td></tr>
+      <tr><td>Renta de la propiedad</td><td class="n">3 427</td><td class="n">3 660</td><td class="n">3 834</td><td class="n">4.9</td></tr>
+      <tr><td>Otros ingresos corrientes</td><td class="n">56</td><td class="n">62</td><td class="n">65</td><td class="n">0.1</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>El promedio del ingreso total trimestral fue de 81 920 pesos, de los cuales 77 864 son ingreso corriente y 4 056 percepciones financieras y de capital.</p>
+
+  <p>Un detalle con consecuencias: la <strong>estimación del alquiler de la vivienda propia</strong> pesa 11.6 % del ingreso corriente y es imputada, no observada. Es un ingreso figurado que libera recursos, no efectivo disponible. Para capacidad de pago probablemente quieras excluirlo; para medir nivel de vida y comparar contra la medición oficial de pobreza, no.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="cifras">
+  <h2><span class="num">§7</span>Cifras ancla para calibración</h2>
+
+  <h3>Distribución por deciles</h3>
+  <div class="tablewrap">
+  <table>
+    <caption>Ingreso corriente promedio trimestral por decil de hogares y participación del ingreso laboral. La última columna es un cálculo derivado, no publicado por el INEGI.</caption>
+    <thead><tr><th>Decil</th><th class="n">Ingreso corriente 2024</th><th class="n">Participación del ingreso por trabajo</th><th class="n">Multiplicador implícito laboral → corriente</th></tr></thead>
+    <tbody>
+      <tr><td>I</td><td class="n">16 795</td><td class="n">42.5 %</td><td class="n">2.35</td></tr>
+      <tr><td>II</td><td class="n">28 297</td><td class="n">55.2 %</td><td class="n">1.81</td></tr>
+      <tr><td>III</td><td class="n">36 845</td><td class="n">59.9 %</td><td class="n">1.67</td></tr>
+      <tr><td>IV</td><td class="n">45 245</td><td class="n">64.6 %</td><td class="n">1.55</td></tr>
+      <tr><td>V</td><td class="n">54 308</td><td class="n">66.8 %</td><td class="n">1.50</td></tr>
+      <tr><td>VI</td><td class="n">64 600</td><td class="n">68.8 %</td><td class="n">1.45</td></tr>
+      <tr><td>VII</td><td class="n">77 451</td><td class="n">70.1 %</td><td class="n">1.43</td></tr>
+      <tr><td>VIII</td><td class="n">95 291</td><td class="n">70.5 %</td><td class="n">1.42</td></tr>
+      <tr><td>IX</td><td class="n">123 712</td><td class="n">69.8 %</td><td class="n">1.43</td></tr>
+      <tr><td>X</td><td class="n">236 095</td><td class="n">62.8 %</td><td class="n">1.59</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>La razón entre el decil X y el decil I es de 14.1 a 1. La curva del multiplicador es en forma de U: los hogares pobres dependen fuertemente de transferencias, los ricos de rentas de la propiedad, y el bloque central es el más laboral. Si tu bandera objetivo se construye desde IMSS, ese multiplicador es el ajuste que necesitas y <strong>no es constante</strong>.</p>
+
+  <h3>Otros anclajes</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Corte</th><th class="n">Ingreso trimestral</th><th>Nota</th></tr></thead>
+    <tbody>
+      <tr><td>Hogar urbano</td><td class="n">85 550</td><td rowspan="2">Ingreso corriente del hogar. La brecha urbano-rural es de 1.78 a 1</td></tr>
+      <tr><td>Hogar rural</td><td class="n">48 004</td></tr>
+      <tr><td>Persona perceptora, total</td><td class="n">30 160</td><td rowspan="3">Ingreso monetario por persona perceptora</td></tr>
+      <tr><td>· Hombres</td><td class="n">36 047</td></tr>
+      <tr><td>· Mujeres</td><td class="n">23 714</td></tr>
+      <tr><td>Hasta primaria completa</td><td class="n">16 036</td><td rowspan="5">Gradiente educativo por persona perceptora. La razón posgrado / primaria es de 5.9 a 1</td></tr>
+      <tr><td>Secundaria</td><td class="n">23 935</td></tr>
+      <tr><td>Preparatoria</td><td class="n">29 239</td></tr>
+      <tr><td>Profesional</td><td class="n">51 709</td></tr>
+      <tr><td>Posgrado</td><td class="n">94 752</td></tr>
+      <tr><td>Con discapacidad</td><td class="n">20 782</td><td rowspan="2">Diferencia de 33 % entre ambos grupos</td></tr>
+      <tr><td>Sin discapacidad</td><td class="n">31 098</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Composición del hogar en 2024: 3.35 personas en promedio, 2.20 perceptores de ingreso y 1.63 ocupados. Coeficiente de Gini de 0.391 con transferencias y 0.450 sin ellas. El tamaño del hogar viene cayendo de forma sostenida, lo que significa que <em>ingreso por hogar</em> e <em>ingreso per cápita</em> se mueven a ritmos distintos entre ediciones.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="base">
+  <h2><span class="num">§8</span>Estructura del microdato</h2>
+
+  <p>La base son 17 archivos CSV normalizados, organizados en tres niveles. Se unen con llaves jerárquicas: <code>folioviv</code> (10 caracteres) identifica la vivienda, <code>foliohog</code> (1) el hogar dentro de la vivienda, y <code>numren</code> (2) a la persona dentro del hogar. Las tablas de negocios agregan <code>id_trabajo</code>.</p>
+
+  <div class="tablewrap">
+  <table>
+    <caption>Tablas de la ENIGH 2024 NS por nivel de análisis y llaves de unión.</caption>
+    <thead><tr><th style="width:200px">Tabla</th><th>Contenido</th><th style="width:190px">Llaves</th></tr></thead>
+    <tbody>
+      <tr><td><code>viviendas</code></td><td>Características físicas de la vivienda, recuento de residentes y hogares, ubicación y variables de diseño muestral</td><td><code>folioviv</code></td></tr>
+      <tr><td><code>hogares</code></td><td>Acceso a la alimentación, equipamiento, vehículos, tiempo de traslado al hospital, hábitos de consumo</td><td><code>folioviv, foliohog</code></td></tr>
+      <tr><td><code>concentradohogar</code></td><td>Tabla resumen con variables construidas. Todos los ingresos y gastos ya trimestralizados</td><td><code>folioviv, foliohog</code></td></tr>
+      <tr><td><code>poblacion</code></td><td>Características sociodemográficas y ocupacionales de cada integrante, salud, uso del tiempo, redes sociales</td><td>+ <code>numren</code></td></tr>
+      <tr><td><code>ingresos</code></td><td>Ingresos y percepciones de capital por persona, por clave de ingreso, mes a mes y trimestralizado</td><td>+ <code>numren, clave</code></td></tr>
+      <tr><td><code>ingresos_jcf</code></td><td>Ingresos del programa Jóvenes Construyendo el Futuro. Tabla de referencia, no entra al procesamiento de resultados</td><td>+ <code>numren, clave</code></td></tr>
+      <tr><td><code>trabajos</code></td><td>Condición de actividad de personas de 12 o más años, prestaciones, contrato, horas, SINCO, SCIAN, tamaño de empresa</td><td>+ <code>numren, id_trabajo</code></td></tr>
+      <tr><td><code>gastoshogar</code></td><td>Gastos monetarios y no monetarios del hogar, más la estimación del alquiler</td><td><code>folioviv, foliohog</code></td></tr>
+      <tr><td><code>gastospersona</code></td><td>Gastos por integrante: educación, transporte público, remuneraciones en especie</td><td>+ <code>numren</code></td></tr>
+      <tr><td><code>gastotarjetas</code></td><td>Gasto cubierto con tarjeta de crédito bancaria o comercial</td><td><code>folioviv, foliohog</code></td></tr>
+      <tr><td><code>erogaciones</code></td><td>Erogaciones financieras y de capital del hogar</td><td><code>folioviv, foliohog</code></td></tr>
+      <tr><td><code>noagro</code> · <code>noagroimportes</code></td><td>Ingresos, gastos y características de negocios industriales, comerciales y de servicios del hogar</td><td>+ <code>id_trabajo</code></td></tr>
+      <tr><td><code>agro</code> · <code>agroproductos</code> · <code>agrogasto</code> · <code>agroconsumo</code></td><td>Negocios agrícolas, forestales, pecuarios, de pesca y caza: productos, cosechas, destino y autoconsumo</td><td>+ <code>id_trabajo, tipoact</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Variables de diseño y geografía</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th style="width:130px">Variable</th><th style="width:80px">Tipo</th><th>Definición</th></tr></thead>
+    <tbody>
+      <tr><td><code>ubica_geo</code></td><td>C(5)</td><td>Entidad (2) más municipio (3), del catálogo de claves del INEGI. Presente en <code>viviendas</code> y <code>concentradohogar</code></td></tr>
+      <tr><td><code>tam_loc</code></td><td>C(1)</td><td>Tamaño de localidad en cuatro categorías</td></tr>
+      <tr><td><code>est_socio</code></td><td>C(1)</td><td>Estrato socioeconómico de la UPM: 1 bajo, 2 medio bajo, 3 medio alto, 4 alto</td></tr>
+      <tr><td><code>est_dis</code></td><td>C(3)</td><td>Estrato de diseño muestral, agrupación de UPM por estrato geográfico</td></tr>
+      <tr><td><code>upm</code></td><td>C(7)</td><td>Unidad primaria de muestreo. Necesaria para varianza</td></tr>
+      <tr><td><code>factor</code></td><td>N(5)</td><td>Factor de expansión, ya ajustado por no respuesta y proyección</td></tr>
+      <tr><td><code>smg</code></td><td>N(6,2)</td><td>Salario mínimo general, en <code>concentradohogar</code>. Permite expresar el ingreso directamente en salarios mínimos</td></tr>
+      <tr><td><code>entidad</code></td><td>C(2)</td><td>Replicada en <code>hogares</code>, <code>poblacion</code>, <code>ingresos</code>, <code>trabajos</code>, <code>gastoshogar</code> y <code>gastospersona</code> para evitar el <em>join</em> con <code>viviendas</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <span class="h">Ruta corta</span>
+    <p>Para el 80 % de los usos de modelado, <code>concentradohogar</code> más <code>poblacion</code> más <code>trabajos</code> es suficiente: la primera trae el ingreso ya construido y trimestralizado con las variables de diseño y geografía, la segunda el perfil de la persona y la tercera el perfil de su empleo. Las tablas de gasto y negocios entran solo si vas a modelar capacidad de pago o ingreso de trabajadores independientes.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="hallazgos">
+  <h2><span class="num">§9</span>Hallazgos aplicables al modelo</h2>
+
+  <p>Ordenados por valor esperado para el estimador de ingresos, considerando las fuentes que ya tienes: CONEVAL, ENOE 2026 T1, Censo Económico 2024, DENUE con inferencia geoespacial, empleo IMSS y crediticio propio.</p>
+
+  <div class="finding">
+    <div class="rank">1</div>
+    <div>
+      <h3>Cuantifica el sesgo de tu bandera objetivo IMSS</h3>
+      <p>El salario base de cotización del IMSS es una medida de remuneración por trabajo subordinado formal. La ENIGH dice que ese componente es el <strong>56.1 % del ingreso corriente del hogar</strong>, y que la brecha varía sistemáticamente por decil: el multiplicador implícito va de 2.35 en el decil I a 1.42 en el VIII. Un modelo entrenado contra IMSS sin corregir aprende una función que subestima más en la base de la distribución, justo donde vive tu población no-hit.</p>
+      <p>La ENIGH permite estimar esa función de corrección condicionada a entidad, tam_loc, est_socio, escolaridad, sector y tamaño de empresa, y aplicarla como capa de calibración sobre la predicción base.</p>
+      <span class="tag">Corrección de sesgo</span><span class="tag">Calibración</span>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="rank">2</div>
+    <div>
+      <h3>Cubre a los informales, que IMSS no ve</h3>
+      <p>El trabajo independiente aporta 6 057 pesos trimestrales al hogar promedio, y las tablas <code>noagro</code> y <code>agro</code> reconstruyen su ingreso a partir de ventas, autoconsumo, gastos del negocio y erogaciones, con el detalle de establecimientos, socios, personal ocupado, registro contable y notarial. Esta es la única fuente pública que estima ingreso para el segmento que tu registro administrativo pierde por construcción.</p>
+      <p>Conecta directamente con el trabajo de sesgo de selección que ya vienes haciendo: la ENIGH te da la distribución poblacional completa contra la cual estimar las probabilidades de inclusión de tu muestra observada.</p>
+      <span class="tag">Sesgo de selección</span><span class="tag">Cobertura</span>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="rank">3</div>
+    <div>
+      <h3>Puente SCIAN y tamaño de empresa hacia DENUE e IMSS</h3>
+      <p>La tabla <code>trabajos</code> trae <code>scian</code> (4 dígitos), <code>sinco</code> (4 dígitos), <code>tam_emp</code>, <code>clas_emp</code>, tipo de contrato y veinte indicadores de prestaciones. Con eso construyes P(ingreso | SCIAN, tamaño de empresa, entidad, tam_loc, est_socio) y la trasladas a tu solicitante vía el match geoespacial que ya tienes con DENUE, que comparte clasificación SCIAN, y vía el registro patronal de IMSS, que da tamaño de empresa.</p>
+      <p>Es la única forma de convertir un establecimiento cercano en una expectativa de ingreso con fundamento estadístico, en lugar de una heurística.</p>
+      <span class="tag">Feature engineering</span><span class="tag">DENUE</span>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="rank">4</div>
+    <div>
+      <h3>Estimación en áreas pequeñas con la celda entidad × tam_loc × est_socio</h3>
+      <p>La ruta metodológicamente limpia para bajar de entidad a AGEB. Replicas la estratificación de las 42 variables censales sobre el Censo 2020 a nivel AGEB, asignas a cada solicitante su celda, y usas la ENIGH como fuente de la distribución condicional dentro de la celda. Lo que agregas no es un promedio municipal ruidoso sino una <em>prior</em> con soporte muestral verificable.</p>
+      <p>Sobre esa base pueden montarse estimadores tipo Fay-Herriot o modelos jerárquicos que combinan el efecto de área con las covariables individuales.</p>
+      <span class="tag">SAE</span><span class="tag">AGEB</span>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="rank">5</div>
+    <div>
+      <h3>Objetivo directamente en salarios mínimos</h3>
+      <p><code>concentradohogar</code> incluye <code>smg</code>, el salario mínimo general vigente. Definir la bandera objetivo en múltiplos de salario mínimo, como ya contemplas, es reproducible sin salir del archivo y hace comparables las ediciones 2016 a 2024 en términos reales sin deflactar.</p>
+      <span class="tag">Definición de target</span>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="rank">6</div>
+    <div>
+      <h3>El gasto como validación cruzada del ingreso declarado</h3>
+      <p>La ENIGH capta gasto con un instrumento independiente del de ingreso, incluido un cuadernillo diario de siete días. En la parte baja de la distribución el gasto suele reportarse mejor que el ingreso. Tener ambos en el mismo hogar te permite estimar la razón gasto-ingreso por estrato y usarla como control de plausibilidad sobre los ingresos que declaran tus solicitantes.</p>
+      <p><code>gastotarjetas</code> añade algo poco común: cuánto del gasto del hogar se cubre con tarjeta bancaria o comercial, por estrato. Es un puente natural hacia tus propios datos crediticios.</p>
+      <span class="tag">Validación</span><span class="tag">Buró</span>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="rank">7</div>
+    <div>
+      <h3>Complementariedad con la ENOE, no redundancia</h3>
+      <p>La ENOE es trimestral, tiene una muestra mucho mayor y mide ingreso laboral en rangos con no respuesta considerable. La ENIGH es bienal, más pequeña, y mide ingreso total con un instrumento de siete días y periodo de referencia semestral. El reparto natural: <strong>ENOE para frecuencia y estructura ocupacional, ENIGH para nivel y composición del ingreso</strong>. Ambas comparten marco muestral, definición de tam_loc y variables de diseño, lo que permite armonizarlas sin recodificaciones forzadas.</p>
+      <span class="tag">ENOE</span><span class="tag">Armonización</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="riesgos">
+  <h2><span class="num">§10</span>Limitaciones y riesgos</h2>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th style="width:230px">Riesgo</th><th>Descripción y mitigación</th></tr></thead>
+    <tbody>
+      <tr><td>Techo de desagregación</td><td>Nada por debajo de entidad × urbano/rural tiene validez inferencial. Mitigación: usar celdas entidad × tam_loc × est_socio y verificar el CV de cada celda contra el semáforo del INEGI antes de usarla.</td></tr>
+      <tr><td>Subdeclaración del ingreso</td><td>Es un rasgo estructural de las encuestas de hogares, más agudo en el extremo alto de la distribución y en ingresos de capital. Para tu población objetivo, no-hit y subbancarizada, el efecto es menor pero no nulo. El contraste con el gasto es el diagnóstico disponible.</td></tr>
+      <tr><td>Desfase temporal</td><td>Levantada en el otoño de 2024, publicada en julio de 2025. Al operar en 2026 tendrás entre 18 y 24 meses de desfase, en un periodo con crecimiento nominal del ingreso de 10.6 % bienal. Cualquier nivel debe deflactarse o expresarse en salarios mínimos.</td></tr>
+      <tr><td>Ruptura de comparabilidad</td><td>La Nueva Serie no es comparable con la construcción tradicional. Además, dentro de la propia Nueva Serie hubo cambios en 2022 y 2024 en aguinaldo, autoconsumo y regalos no periódicos. Documentar la versión exacta usada en el entrenamiento.</td></tr>
+      <tr><td>Efecto de diseño ignorado</td><td>El DEFF por entidad va de 1.17 a 3.73. Ignorar el diseño complejo infla la confianza en cualquier umbral o punto de corte derivado de la encuesta.</td></tr>
+      <tr><td>Alquiler imputado</td><td>11.6 % del ingreso corriente es un ingreso figurado, no efectivo. Decidir explícitamente si entra al target y dejarlo asentado; cambia el nivel del agregado en más de un décimo.</td></tr>
+      <tr><td>Marco muestral de 2020</td><td>El Marco Maestro se construyó con el Censo 2020. En zonas de expansión urbana acelerada —el AMG entre ellas— la estratificación socioeconómica de la UPM puede estar desactualizada respecto a la realidad de 2026.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="siguiente">
+  <h2><span class="num">§11</span>Siguiente paso: integración de los CSV</h2>
+
+  <p>Orden sugerido para la construcción del dataset unificado, en línea con el pipeline modular que ya tienes:</p>
+
+  <ol>
+    <li>Cargar <code>viviendas</code> y <code>concentradohogar</code>, verificar que <code>folioviv</code> se lea como cadena de 10 caracteres con ceros a la izquierda. Es la fuente de error más común: si pandas lo interpreta como entero, se rompen todas las uniones.</li>
+    <li>Validar que el total expandido de <code>concentradohogar</code> por <code>factor</code> reproduzca el universo de hogares publicado, y que el promedio ponderado de <code>ing_cor</code> dé 77 864 pesos. Si no cuadra, hay un problema de lectura antes de continuar.</li>
+    <li>Unir <code>poblacion</code> y <code>trabajos</code> al nivel persona por <code>folioviv + foliohog + numren</code>, resolviendo el uno-a-varios de <code>id_trabajo</code> con una regla explícita: trabajo principal, o agregación de todos.</li>
+    <li>Pivotear <code>ingresos</code> de largo a ancho por <code>clave</code> para obtener el desglose por fuente a nivel persona, y reconciliar la suma contra los agregados de <code>concentradohogar</code>.</li>
+    <li>Construir el objeto de diseño muestral con <code>upm</code>, <code>est_dis</code> y <code>factor</code>, y estimar la primera tabla de referencia: ingreso por entidad × tam_loc × est_socio con su coeficiente de variación.</li>
+    <li>Incorporar <code>gastoshogar</code>, <code>gastotarjetas</code> y las tablas de negocios solo si el alcance lo requiere; son las que más pesan y las que más claves de desagregación traen.</li>
+  </ol>
+
+  <div class="note">
+    <span class="h">Punto de control</span>
+    <p>Antes de modelar, la tabla de celdas con su CV es el entregable que determina qué se puede y qué no se puede afirmar con esta fuente. Todo lo demás se construye encima de ella.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Documento de trabajo elaborado a partir de la documentación metodológica oficial de la ENIGH 2024 Nueva Serie del INEGI: Diseño conceptual, Diseño muestral, Criterios de validación, Documento operativo de campo y Presentación de resultados. Las cifras de ingreso corresponden a pesos de 2024. Los cálculos derivados —multiplicador implícito laboral a corriente, razones y participaciones no publicadas— están señalados como tales en el cuerpo del documento.</p>
+</footer>
+
+</div>
+</body>
+</html>
